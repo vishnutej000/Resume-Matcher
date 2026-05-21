@@ -435,6 +435,28 @@ class JobUploadResponse(BaseModel):
     request: dict[str, Any]
 
 
+class LatexResumeRequest(BaseModel):
+    """Request to generate a LaTeX resume PDF tailored to a job description."""
+
+    resume_id: str
+    job_id: str
+    max_experiences: int = Field(default=3, ge=2, le=3)
+    max_projects: int = Field(default=3, ge=2, le=3)
+
+
+class PersonalLatexRequest(BaseModel):
+    """Request to generate a personal single-page LaTeX resume PDF from source MD files.
+
+    ``job_id`` is optional. When provided the endpoint selects the 2-3 most
+    relevant entries for that job description. When omitted it falls back to
+    the most-recently-listed entries in the source MD files.
+    """
+
+    job_id: str | None = None
+    max_experiences: int = Field(default=3, ge=2, le=3)
+    max_projects: int = Field(default=3, ge=2, le=3)
+
+
 # Improvement Models
 class ImproveResumeRequest(BaseModel):
     """Request to improve/tailor a resume."""

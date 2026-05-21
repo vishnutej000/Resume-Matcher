@@ -265,6 +265,44 @@ export async function downloadResumePdf(
   return await res.blob();
 }
 
+export async function downloadLatexResumePdf(
+  resumeId: string,
+  jobId: string,
+  maxExperiences = 3,
+  maxProjects = 3
+): Promise<Blob> {
+  const res = await apiPost('/latex/resume-pdf', {
+    resume_id: resumeId,
+    job_id: jobId,
+    max_experiences: maxExperiences,
+    max_projects: maxProjects,
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Failed to download LaTeX resume (status ${res.status}): ${text}`);
+  }
+  return await res.blob();
+}
+
+/** Downloads a personal single-page LaTeX resume PDF.
+ *  Pass jobId for JD-tailored entry selection; omit for the general (master) view. */
+export async function downloadPersonalLatexResumePdf(
+  jobId?: string | null,
+  maxExperiences = 3,
+  maxProjects = 3
+): Promise<Blob> {
+  const res = await apiPost('/latex/personal-resume-pdf', {
+    job_id: jobId ?? null,
+    max_experiences: maxExperiences,
+    max_projects: maxProjects,
+  });
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Failed to download personal LaTeX resume (status ${res.status}): ${text}`);
+  }
+  return await res.blob();
+}
+
 /** Deletes a resume by ID */
 export async function deleteResume(resumeId: string): Promise<void> {
   const res = await apiDelete(`/resumes/${encodeURIComponent(resumeId)}`);

@@ -722,6 +722,8 @@
     "returnToDashboard": "Voltar ao Painel",
     "enhanceResume": "Aprimorar Currículo",
     "downloadResume": "Baixar Currículo",
+    "downloadLatexResume": "Baixar PDF LaTeX",
+    "downloadPersonalResume": "PDF Pessoal",
     "deletedTitle": "Currículo Excluído",
     "deletedDescriptionMaster": "Seu currículo principal foi permanentemente excluído do sistema.",
     "deletedDescriptionRegular": "O currículo foi permanentemente excluído do sistema.",

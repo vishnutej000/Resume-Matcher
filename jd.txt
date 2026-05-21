@@ -1,0 +1,47 @@
+About the job
+Full Stack Development Intern (Remote)
+
+About Quantum IT Innovation
+
+Quantum IT Innovation is a global web development and digital marketing company with offices in the USA, UK, and India. We work with international clients across web, mobile, and digital solutions.
+
+Role Overview
+
+We are looking for Full Stack Developer Interns with prior internship experience who are eager to work on real-time projects and grow their development skills.
+
+Responsibilities
+
+ Develop responsive web applications
+ Work on frontend and backend development tasks
+ Build and integrate APIs
+ Collaborate with the development team on live projects
+ Debug, test, and improve application performance
+
+Skills Required
+
+ HTML, CSS, JavaScript
+ ReactJS
+ Node.js & Express.js
+ MongoDB
+
+Preferred Skills
+
+ Redux
+ Next.js
+ TypeScript
+ Angular
+
+Eligibility
+
+ At least 1 prior internship in Full Stack Development
+ 2023–2026 graduates preferred
+ Good communication and problem-solving skills
+
+Perks
+
+ Remote work opportunity
+ Internship certificate
+ Hands-on experience on live projects
+ Opportunity to work with experienced developers
+
+Note: This is a paid internship.Skills: react,design,angular,node.js,components,redux,javascript,html

@@ -723,6 +723,8 @@
     "returnToDashboard": "Return to Dashboard",
     "enhanceResume": "Enhance Resume",
     "downloadResume": "Download Resume",
+    "downloadLatexResume": "Download LaTeX PDF",
+    "downloadPersonalResume": "Personal PDF",
     "deletedTitle": "Resume Deleted",
     "deletedDescriptionMaster": "Your master resume has been permanently deleted from the system.",
     "deletedDescriptionRegular": "The resume has been permanently deleted from the system.",

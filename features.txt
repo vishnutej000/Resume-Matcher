@@ -1,0 +1,60 @@
+Resume Matcher - Features and Functionalities
+===========================================
+
+CORE WORKFLOW
+- Master resume intake: Upload a PDF or DOCX and parse it into structured resume data.
+  Stores a single master resume as the baseline for tailoring and enrichment workflows.
+
+- Job description tailoring: Paste a job description and generate a tailored resume.
+  Produces improved content aligned to the target role and saves it as a new resume.
+
+- Resume viewer: View a resume in read-only mode and manage it from one place.
+  Includes actions to edit, download PDF, and delete with confirmation.
+
+- Resume builder with live preview: Edit content on the left, see WYSIWYG preview on the right.
+  Tabs support Resume, Cover Letter, and Outreach content in a single workspace.
+
+AI AND MATCHING
+- AI enrichment: Analyze weak or generic bullets and ask up to six targeted questions.
+  Generates additional bullets and appends them to preserve original content.
+
+- JD Match analysis: Compare a tailored resume to its job description side by side.
+  Highlights matching keywords and shows match counts and a color-coded score.
+
+- Keyword extraction and scoring: Extracts significant JD keywords and filters stop words.
+  Matching is case-insensitive and provides total keywords and match percentage.
+
+TEMPLATES AND FORMATTING
+- Multiple resume templates: Swiss single, Swiss two-column, modern, and modern two-column layouts.
+  Templates are optimized for readability and density depending on user preference.
+
+- Formatting controls: Adjust margins, spacing, line height, and font sizing.
+  Tune header scale, font families, compact mode, contact icons, and accent colors.
+
+- Custom sections system: Add, rename, reorder, hide, and delete sections dynamically.
+  Supports text blocks, item lists, and string lists with per-section visibility control.
+
+EXPORT AND PDF
+- PDF export: Render professional PDFs using headless Chromium for consistent output.
+  Exports tailored resumes and cover letters with template styling applied.
+
+- Print-ready layout rules: Pagination keeps items together and avoids orphaned headers.
+  Page breaks are managed to keep pages at least half full before breaking.
+
+INTERNATIONALIZATION
+- Multi-language UI and content: Choose UI language and output language separately.
+  Supported UI languages include English, Spanish, Chinese (Simplified), and Japanese.
+
+- Language-aware generation: The backend passes the selected output language to prompts.
+  Existing stored content remains in its original language unless regenerated.
+
+SETTINGS AND INTEGRATIONS
+- LLM provider configuration: Configure provider, model, and API key from Settings.
+  Supports local Ollama and cloud providers via LiteLLM (OpenAI, Anthropic, Gemini, DeepSeek, OpenRouter).
+
+- Connection testing and status: Test LLM connectivity and view system status in-app.
+  Backend health and status endpoints power the system status indicators.
+
+DATA STORAGE AND MANAGEMENT
+- Local persistence with TinyDB: Resumes, jobs, and improvements are stored in JSON tables.
+  Supports listing, updating, and deleting resumes with a single master resume rule.

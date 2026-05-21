@@ -1,0 +1,82 @@
+\documentclass[letterpaper]{article}
+
+% --- PACKAGES ---
+\usepackage[utf8]{inputenc}
+\usepackage[
+    % These are the initial margins for the HEADER ONLY.
+    ignoreheadfoot,
+    top=1.5cm,
+    bottom=1.0cm,
+    left=1.5cm,
+    right=1.5cm,
+    footskip=0.8cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{charter}
+\usepackage{fontawesome5}
+
+% --- LAYOUT CONFIGURATION ---
+\newlength{\mainContentLeftMargin}
+\newlength{\mainContentRightMargin}
+\setlength{\mainContentLeftMargin}{0.75cm}
+\setlength{\mainContentRightMargin}{0.75cm}
+% --- END OF CONFIGURATION ---
+
+% --- SETTINGS ---
+\pagestyle{empty}
+\raggedright
+\setlength{\parindent}{0pt}
+
+% --- HYPERLINK SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    pdftitle={Resume - {{NAME}}},
+    pdfauthor={{NAME}},
+}
+
+% --- FONT & SPACING ---
+\renewcommand{\normalsize}{\fontsize{10pt}{12pt}\selectfont}
+
+% --- SECTION FORMATTING ---
+\titleformat{\section}{\bfseries\large\scshape\raggedright}{}{0em}{}[\vspace{1pt}\titlerule]
+\titlespacing{\section}{0pt}{0.15cm}{0.1cm}
+
+% --- CUSTOM ENVIRONMENTS & COMMANDS ---
+\newlist{highlights}{itemize}{1}
+\setlist[highlights]{
+    topsep=0pt,
+    parsep=0.02cm,
+    itemsep=0.02cm,
+    leftmargin=12pt,
+    label=$\bullet$
+}
+\newcommand{\skillitem}[2]{\textbf{#1:} #2}
+
+% --- DOCUMENT START ---
+\begin{document}
+
+% Header
+\begin{center}
+    \fontsize{17pt}{20pt}\selectfont\textbf{{{NAME}}}
+
+    \vspace{3pt}
+    \normalsize
+    {{TITLE}}
+
+    \vspace{5pt}
+    \small
+    {{CONTACT_LINE}}
+\end{center}
+
+{{SUMMARY_SECTION}}
+{{EDUCATION_SECTION}}
+{{EXPERIENCE_SECTION}}
+{{PROJECTS_SECTION}}
+{{SKILLS_SECTION}}
+
+\end{document}

@@ -195,6 +195,25 @@ Extract numeric years (e.g., "5+ years" → 5) and infer seniority level.
 Job description:
 {job_description}"""
 
+LATEX_SELECT_ENTRIES_PROMPT = """Select the most relevant {entry_type} entries for this job description.
+
+Target count: {max_items}
+
+Job description:
+{job_description}
+
+Entries (JSON):
+{entries_json}
+
+Rules:
+- Return 2-3 entries when available
+- Use only the provided IDs
+- Prefer entries whose role or tech stack matches the JD
+- Do not invent content
+
+Output JSON:
+{{"selected_ids":[1,2,3]}}"""
+
 CRITICAL_TRUTHFULNESS_RULES_TEMPLATE = """CRITICAL TRUTHFULNESS RULES - NEVER VIOLATE:
 1. DO NOT add any skill, tool, technology, or certification that is not explicitly mentioned in the original resume
 2. DO NOT invent numeric achievements (e.g., "increased by 30%") unless they exist in original

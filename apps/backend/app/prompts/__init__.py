@@ -10,6 +10,7 @@ from app.prompts.templates import (
     IMPROVE_PROMPT_OPTIONS,
     IMPROVE_RESUME_PROMPT,
     IMPROVE_RESUME_PROMPTS,
+    LATEX_SELECT_ENTRIES_PROMPT,
     PARSE_RESUME_PROMPT,
     SKILL_TARGET_PLAN_PROMPT,
     get_language_name,

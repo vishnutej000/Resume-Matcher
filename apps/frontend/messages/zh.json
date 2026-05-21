@@ -723,6 +723,8 @@
     "returnToDashboard": "返回仪表板",
     "enhanceResume": "增强简历",
     "downloadResume": "下载简历",
+    "downloadLatexResume": "下载 LaTeX PDF",
+    "downloadPersonalResume": "个人PDF",
     "deletedTitle": "已删除简历",
     "deletedDescriptionMaster": "您的主简历已从系统中永久删除。",
     "deletedDescriptionRegular": "该简历已从系统中永久删除。",

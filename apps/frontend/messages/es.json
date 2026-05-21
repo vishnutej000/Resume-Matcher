@@ -722,6 +722,8 @@
     "returnToDashboard": "Volver al Panel",
     "enhanceResume": "Mejorar currículum",
     "downloadResume": "Descargar currículum",
+    "downloadLatexResume": "Descargar PDF LaTeX",
+    "downloadPersonalResume": "PDF Personal",
     "deletedTitle": "Currículum eliminado",
     "deletedDescriptionMaster": "Tu currículum maestro se ha eliminado permanentemente del sistema.",
     "deletedDescriptionRegular": "El currículum se ha eliminado permanentemente del sistema.",

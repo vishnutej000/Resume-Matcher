@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import Resume, { ResumeData } from '@/components/dashboard/resume-component';
+import { type ResumeData } from '@/components/dashboard/resume-component';
 import {
   fetchResume,
-  downloadResumePdf,
-  getResumePdfUrl,
+  downloadPersonalLatexResumePdf,
   deleteResume,
+  fetchJobDescription,
   retryProcessing,
   renameResume,
 } from '@/lib/api/resume';
@@ -17,15 +17,12 @@ import { useStatusCache } from '@/lib/context/status-cache';
 import { ArrowLeft, Edit, Download, Loader2, AlertCircle, Sparkles, Pencil } from 'lucide-react';
 import { EnrichmentModal } from '@/components/enrichment/enrichment-modal';
 import { useTranslations } from '@/lib/i18n';
-import { withLocalizedDefaultSections } from '@/lib/utils/section-helpers';
-import { useLanguage } from '@/lib/context/language-context';
-import { downloadBlobAsFile, openUrlInNewTab, sanitizeFilename } from '@/lib/utils/download';
+import { downloadBlobAsFile, sanitizeFilename } from '@/lib/utils/download';
 
 type ProcessingStatus = 'pending' | 'processing' | 'ready' | 'failed';
 
 export default function ResumeViewerPage() {
   const { t } = useTranslations();
-  const { uiLanguage } = useLanguage();
   const params = useParams();
   const router = useRouter();
   const { decrementResumes, setHasMasterResume } = useStatusCache();
@@ -41,16 +38,26 @@ export default function ResumeViewerPage() {
   const [showEnrichmentModal, setShowEnrichmentModal] = useState(false);
   const [isRetrying, setIsRetrying] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
   const [resumeTitle, setResumeTitle] = useState<string | null>(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [editingTitleValue, setEditingTitleValue] = useState('');
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const activeObjectUrl = useRef<string | null>(null);
 
   const resumeId = params?.id as string;
 
-  const localizedResumeData = useMemo(() => {
-    if (!resumeData) return null;
-    return withLocalizedDefaultSections(resumeData, t);
-  }, [resumeData, t]);
+  // Revoke object URL when component unmounts to free memory
+  useEffect(() => {
+    return () => {
+      if (activeObjectUrl.current) {
+        URL.revokeObjectURL(activeObjectUrl.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!resumeId) return;
@@ -59,33 +66,66 @@ export default function ResumeViewerPage() {
       try {
         setLoading(true);
         setError(null);
+        setJobId(null);
+        setPreviewUrl(null);
+        setPreviewBlob(null);
+        setPreviewError(null);
+        if (activeObjectUrl.current) {
+          URL.revokeObjectURL(activeObjectUrl.current);
+          activeObjectUrl.current = null;
+        }
+
         const data = await fetchResume(resumeId);
 
-        // Get processing status
         const status = (data.raw_resume?.processing_status || 'pending') as ProcessingStatus;
         setProcessingStatus(status);
-
-        // Capture title for editable display (always set to clear stale state)
         setResumeTitle(data.title ?? null);
 
-        // Prioritize processed_resume if available (structured JSON)
+        let hasValidData = false;
         if (data.processed_resume) {
           setResumeData(data.processed_resume as ResumeData);
           setError(null);
+          hasValidData = true;
         } else if (status === 'failed') {
           setError(t('resumeViewer.errors.processingFailed'));
         } else if (status === 'processing') {
           setError(t('resumeViewer.errors.stillProcessing'));
         } else if (data.raw_resume?.content) {
-          // Try to parse raw_resume content as JSON (for tailored resumes stored as JSON)
           try {
             const parsed = JSON.parse(data.raw_resume.content);
             setResumeData(parsed as ResumeData);
+            hasValidData = true;
           } catch {
             setError(t('resumeViewer.errors.notProcessedYet'));
           }
         } else {
           setError(t('resumeViewer.errors.noDataAvailable'));
+        }
+
+        let resolvedJobId: string | null = null;
+        if (data.parent_id) {
+          try {
+            const jd = await fetchJobDescription(resumeId);
+            resolvedJobId = jd.job_id;
+            setJobId(jd.job_id);
+          } catch (jdError) {
+            console.warn('Failed to load job description for LaTeX download:', jdError);
+          }
+        }
+
+        if (hasValidData) {
+          try {
+            const blob = await downloadPersonalLatexResumePdf(resolvedJobId);
+            const url = URL.createObjectURL(blob);
+            activeObjectUrl.current = url;
+            setPreviewBlob(blob);
+            setPreviewUrl(url);
+          } catch (previewErr) {
+            console.error('Failed to load PDF preview:', previewErr);
+            setPreviewError(
+              'Failed to generate PDF preview. Use the Download button to get the PDF.'
+            );
+          }
         }
       } catch (err) {
         console.error('Failed to load resume:', err);
@@ -105,7 +145,6 @@ export default function ResumeViewerPage() {
     try {
       const result = await retryProcessing(resumeId);
       if (result.processing_status === 'ready') {
-        // Reload the page to show the processed resume
         window.location.reload();
       } else {
         setError(t('resumeViewer.errors.processingFailed'));
@@ -145,7 +184,6 @@ export default function ResumeViewerPage() {
     }
   };
 
-  // Reload resume data after enrichment
   const reloadResumeData = async () => {
     try {
       const data = await fetchResume(resumeId);
@@ -165,21 +203,17 @@ export default function ResumeViewerPage() {
 
   const handleDownload = async () => {
     setIsDownloading(true);
+    setDownloadError(null);
     try {
-      const blob = await downloadResumePdf(resumeId, undefined, uiLanguage);
+      // Reuse the already-compiled preview blob for an instant download
+      const blob = previewBlob ?? (await downloadPersonalLatexResumePdf(jobId));
       const filename = sanitizeFilename(resumeTitle, resumeId, 'resume');
       downloadBlobAsFile(blob, filename);
       setShowDownloadSuccessDialog(true);
     } catch (err) {
       console.error('Failed to download resume:', err);
-      if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-        const fallbackUrl = getResumePdfUrl(resumeId, undefined, uiLanguage);
-        const didOpen = openUrlInNewTab(fallbackUrl);
-        if (!didOpen) {
-          alert(t('common.popupBlocked', { url: fallbackUrl }));
-        }
-        return;
-      }
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      setDownloadError(`PDF generation failed: ${msg}`);
     } finally {
       setIsDownloading(false);
     }
@@ -189,7 +223,6 @@ export default function ResumeViewerPage() {
     try {
       setDeleteError(null);
       await deleteResume(resumeId);
-      // Update cached counters
       decrementResumes();
       if (isMasterResume) {
         localStorage.removeItem('master_resume_id');
@@ -346,30 +379,30 @@ export default function ResumeViewerPage() {
           </div>
         )}
 
-        {/* Resume Viewer */}
+        {/* PDF Preview — same output as the download */}
         <div className="flex justify-center pb-4">
-          <div className="resume-print w-full max-w-[250mm] shadow-sw-lg border-2 border-black bg-white">
-            <Resume
-              resumeData={localizedResumeData || resumeData}
-              additionalSectionLabels={{
-                technicalSkills: t('resume.additionalLabels.technicalSkills'),
-                languages: t('resume.additionalLabels.languages'),
-                certifications: t('resume.additionalLabels.certifications'),
-                awards: t('resume.additionalLabels.awards'),
-              }}
-              sectionHeadings={{
-                summary: t('resume.sections.summary'),
-                experience: t('resume.sections.experience'),
-                education: t('resume.sections.education'),
-                projects: t('resume.sections.projects'),
-                certifications: t('resume.sections.certifications'),
-                skills: t('resume.sections.skillsOnly'),
-                languages: t('resume.sections.languages'),
-                awards: t('resume.sections.awards'),
-                links: t('resume.sections.links'),
-              }}
-              fallbackLabels={{ name: t('resume.defaults.name') }}
-            />
+          <div
+            className="w-full max-w-[250mm] shadow-sw-lg border-2 border-black bg-white"
+            style={{ minHeight: '1123px' }}
+          >
+            {previewUrl ? (
+              <iframe
+                src={previewUrl}
+                className="w-full border-none block"
+                style={{ height: '1123px' }}
+                title="Resume Preview"
+              />
+            ) : (
+              <div
+                className="flex flex-col items-center justify-center gap-4 p-8"
+                style={{ minHeight: '1123px' }}
+              >
+                <AlertCircle className="w-8 h-8 text-orange-600" />
+                <p className="font-mono text-sm font-bold uppercase text-center text-orange-700">
+                  {previewError ?? 'Preview unavailable. Use Download to get the PDF.'}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -433,6 +466,19 @@ export default function ResumeViewerPage() {
           description={deleteError}
           confirmLabel={t('common.ok')}
           onConfirm={() => setDeleteError(null)}
+          variant="danger"
+          showCancelButton={false}
+        />
+      )}
+
+      {downloadError && (
+        <ConfirmDialog
+          open={!!downloadError}
+          onOpenChange={() => setDownloadError(null)}
+          title="Download Failed"
+          description={downloadError}
+          confirmLabel={t('common.ok')}
+          onConfirm={() => setDownloadError(null)}
           variant="danger"
           showCancelButton={false}
         />

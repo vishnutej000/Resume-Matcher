@@ -1,0 +1,107 @@
+\documentclass[letterpaper]{article}
+
+% --- PACKAGES ---
+\usepackage[
+    % These are the initial margins for the HEADER ONLY.
+    ignoreheadfoot,
+    top=1.5cm,
+    bottom=1.0cm,
+    left=1.5cm,
+    right=1.5cm,
+    footskip=0.8cm
+]{geometry}
+\usepackage{titlesec}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{charter}
+\usepackage{fontawesome5} % Added for social media icons
+
+% --- LAYOUT CONFIGURATION ---
+\newlength{\mainContentLeftMargin}
+\newlength{\mainContentRightMargin}
+\setlength{\mainContentLeftMargin}{0.75cm}
+\setlength{\mainContentRightMargin}{0.75cm}
+% --- END OF CONFIGURATION ---
+
+% --- SETTINGS ---
+\pagestyle{empty}
+\raggedright
+\setlength{\parindent}{0pt}
+
+% --- HYPERLINK SETUP ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    pdftitle={Resume - Kollati Vishnu Teja},
+    pdfauthor={Kollati Vishnu Teja},
+}
+
+% --- FONT & SPACING ---
+\renewcommand{\normalsize}{\fontsize{10pt}{12pt}\selectfont}
+
+% --- SECTION FORMATTING ---
+\titleformat{\section}{\bfseries\large\scshape\raggedright}{}{0em}{}[\vspace{1pt}\titlerule]
+\titlespacing{\section}{0pt}{0.15cm}{0.1cm}
+
+% --- CUSTOM ENVIRONMENTS & COMMANDS ---
+\newlist{highlights}{itemize}{1}
+\setlist[highlights]{
+    topsep=0pt,
+    parsep=0.02cm,
+    itemsep=0.02cm,
+    leftmargin=12pt,
+    label=$\bullet$
+}
+\newcommand{\skillitem}[2]{\textbf{#1:} #2}
+
+% --- DOCUMENT START ---
+\begin{document}
+
+% Header
+\begin{center}
+    \fontsize{17pt}{20pt}\selectfont\textbf{KOLLATI VISHNU TEJA}
+
+    \vspace{3pt}
+    \normalsize
+    B.Tech Student in Computer Science and Design
+
+    \vspace{5pt}
+    \small
+    \faPhone\ \href{tel:+919989948717}{+91 99899 48717} \quad\textbar\quad
+    \faEnvelope\ \href{mailto:vishnutej2004@gmail.com}{vishnutej2004@gmail.com} \quad\textbar\quad
+    \faLinkedin\ \href{https://www.linkedin.com/in/vishnutej0098/}{LinkedIn} \quad\textbar\quad
+    \faGithub\ \href{https://github.com/vishnutej000}{GitHub} \quad\textbar\quad
+    \faGlobe\ \href{https://vishnutej.tech}{Portfolio} \\[3pt]
+\end{center}
+
+{{SUMMARY_SECTION}}
+
+\section{Education}
+\textbf{Sagi Rama Krishnam Raju Engineering College} \hfill Bhimavaram, Andhra Pradesh, India \\
+\textit{B.Tech in Computer Science and Design (CSD)} \hfill \textit{08/2022 -- 05/2026}
+
+{{EXPERIENCE_SECTION}}
+
+{{PROJECTS_SECTION}}
+
+{{SKILLS_SECTION}}
+
+% --- LEADERSHIP & HACKATHONS ---
+\section{Extracurricular activities}
+\begin{highlights}
+    \item \textbf{Spelling Competition Coordinator:} Organized event with 500+ participants and raised \textgreater 25,000 sponsorship.
+    \item \textbf{Cultura/Technical Fest Coordinator:} Organized Retro art exhibit planning, coordination for workshops and Technical Events fest.
+    \item \textbf{Smart India Hackathon 2023:} Participated in SIH'23. Created a platform known as Dhak Ghar Niryath Kendra (DNK).\hfill August 2023
+    \item \textbf{Codathon 2022:} Participated in Codathon'22. Learned technical skills and solved problems on HackerRank.\hfill December 2022
+\end{highlights}
+
+% --- CERTIFICATIONS ---
+\section*{Certifications}
+\begin{tabular}{@{} l r @{\hspace{1cm}} l r}
+    \textbf{IIDT Blackbucks Virtual Internship} & 2025 & \textbf{Cyber Security Virtual Intern} \textit{- EduSkills} & 2025 \\
+    \textbf{Google Ads Certification} & 2024 & \textbf{Java Programming} \textit{- Spoken Tutorials} & 2023 \\
+\end{tabular}
+
+\end{document}
